@@ -1,0 +1,144 @@
+#include <iostream>
+
+using namespace std;
+struct Estaciones{
+int id;
+string nombreE;
+int cantMax;
+int cantDisp;
+};
+struct Usuarios{
+int dni;
+string nomyApe;
+};
+struct Prestamos{
+int dni;
+int idEstRet;
+int idEstDev;
+int tiempoU;
+};
+struct Infractores{
+int dni;
+int tiempoE;
+};
+void cargaEstaciones (Estaciones datosE[],int n){
+    for(int i=0;i<n;i++){
+    cout<<"Ingrese el id"<<endl;
+    cin>> datosE[i].id;
+    cout<<"Ingrese el nombre estacion"<<endl;
+    cin>> datosE[i].nombreE;
+    cout<<"Ingrese la cantidad disponible"<<endl;
+    cin>> datosE[i].cantDisp;
+   }
+ }
+void cargaUsuarios (Usuarios datosU[], int cU){
+     for(int i=0;i<cU;i++){
+    cout<<"Ingrese el dni"<<endl;
+    cin>> datosU[i].dni;
+    cout<<"Ingrese el nombre y apellido"<<endl;
+    cin>> datosU[i].nomyApe;
+    }
+    return;
+  }
+void cargaPrestamos (Prestamos datosP[], int cP){
+    for(int i=0;i<cP;i++){
+    cout<<"Ingrese el dni"<<endl;
+    cin>> datosP[i].dni;
+    cout<<"Ingrese el id Estacion Retiro"<<endl;
+    cin>> datosP[i].idEstRet;
+    cout<<"Ingrese el id Estacion Devolucion"<<endl;
+    cin>> datosP[i].idEstDev;
+    cout<<"Ingrese el tiempo utilizado por el usuario"<<endl;
+    cin>> datosP[i].tiempoU;
+   }
+   return;
+ }
+void inicializar (Infractores datosI[], int cP){
+for (int i=0;i<cP;i++){
+    datosI[i].tiempoE=0;
+   }
+   return;
+}
+void inicializar (int datosERet[], int cEr){
+for (int i=0;i<cEr;i++){
+    datosERet[i]=0;
+   }
+   return;
+}
+void procesarPrestamos (Estaciones datosE[], Prestamos datosP[],Usuarios datosU[], Infractores datosI[],int datosERet[], int cE, int cP, int cU, int cI, int cR){
+   for (int i=0; i<cP;i++){
+        datosE[datosP[i].idEstDev-1].cantDisp+=1;
+        datosE[datosP[i].idEstRet-1].cantDisp+=(-1);
+        datosERet[datosP[i].idEstDev-1]+=1;
+        datosERet[datosP[i].idEstRet-1]+=(-1);
+        cout<< datosERet[datosP[i].idEstDev-1]<<endl;
+        cout<<datosERet[datosP[i].idEstRet-1]<<endl;
+        datosI[i].dni=datosP[i].dni;
+          if (datosP[i].tiempoU>60){
+            datosI[i].tiempoE=datosP[i].tiempoU-60;
+            }
+        }
+    return;
+}
+int buscar(Usuarios datosU[], int cU, int dniAct){
+    int ini=0;
+    int fin=cU-1;
+    int pos=-1;
+    while(ini<= fin && pos==-1){
+        int centro=(ini+fin)/2;
+        if(datosU[centro].dni==dniAct){
+            pos=centro;
+        }
+        else{
+         if(datosU[centro].dni>dniAct){
+                fin=centro-1;
+                }
+        else{
+                ini=centro+1;
+            }
+        }
+    }
+return pos;
+}
+int main() {
+    int cU;
+    int cP;
+    int cI;
+    cout<<"Ingrese cantidad de usuarios"<<endl;
+    cin>> cU;
+    cout<<"Ingrese cantidad de prestamos"<<endl;
+    cin>> cP;
+    Estaciones datosE[6];
+    cargaEstaciones (datosE, 6);
+    Usuarios datosU[cU];
+    cargaUsuarios (datosU, cU);
+    Prestamos datosP[cP];
+    cargaPrestamos (datosP, cP);
+    Infractores datosI[cP];
+    inicializar (datosI, cP);
+    int datosERet[6];
+    inicializar (datosERet, 6);
+    procesarPrestamos (datosE, datosP, datosU, datosI, datosERet, 6, cP, cU, cP, 6);
+    int i=0;
+    int dniAct;
+    int total=0;
+    int pos=-1;
+    while( i<cP){
+    dniAct=datosI[i].dni;
+    total=0;
+    while(i<cP && dniAct==datosI[i].dni){
+            total+=datosI[i].tiempoE;
+            i++;
+           }
+        pos=buscar(datosU, cU, dniAct);
+        if(total>0){
+        cout<< "El dni infractor es: "<< dniAct<< " - "<< "el nombre y apellido es: " << datosU[pos].nomyApe<< " - "<< "el total es: "<< total<<endl;
+        }
+    }
+    for(int i=0; i<6; i++){
+        if (datosERet[i]<0){
+            cout<< "id estacion: " <<datosE[i].id << " - "<<  "nombre estacion: " << datosE[i].nombreE<<endl;
+        }
+    }
+    return 0;
+}
